@@ -2,9 +2,11 @@ from typing import Any, TypeVar
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.core.database import Base
 
+# --- Generic type (Any sqlalchemy model) ---
 T = TypeVar('T', bound=Base)
 
 
+# --- Base Repository class ---
 class BaseRepository[T]:
     
     def __init__(self, model: type[T], session: AsyncSession):
