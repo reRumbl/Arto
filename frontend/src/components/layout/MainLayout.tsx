@@ -2,6 +2,7 @@
 
 import { Box, Container } from '@mui/material';
 import Header from './Header';
+import Footer from './Footer';
 
 type MainLayoutProps = {
     children: React.ReactNode;
@@ -15,6 +16,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
             <Container component='main' sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
                 {children}
             </Container>
+            <Footer />
         </Box>
     );
 }
