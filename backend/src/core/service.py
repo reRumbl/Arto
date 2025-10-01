@@ -1,6 +1,7 @@
 from typing import Any, TypeVar
 from pydantic import BaseModel
 from src.core.repository import BaseRepository
+from src.core.exceptions import NotFoundException
 
 # --- Generic type (repository) ---
 RepoT = TypeVar('RepoT', bound=BaseRepository)
@@ -30,33 +31,33 @@ class BaseService[
         
         return self.read_schema.model_validate(created_instance)
 
-    async def get(self, pk: Any) -> ReadSchemaT | None:
+    async def get(self, pk: Any) -> ReadSchemaT:
         '''Get object'''
         
         instance = await self.repository.get(pk)
         
-        if instance:
-            return self.read_schema.model_validate(instance)
+        if not instance:
+            raise NotFoundException()
         
-        return None
+        return self.read_schema.model_validate(instance)
 
-    async def update(self, pk: Any, schema: UpdateSchemaT) -> ReadSchemaT | None:
+    async def update(self, pk: Any, schema: UpdateSchemaT) -> ReadSchemaT:
         '''Update object'''
         
         update_data = schema.model_dump(exclude_unset=True)
         updated_instance = await self.repository.update(pk, **update_data)
         
-        if updated_instance:
-            return self.read_schema.model_validate(updated_instance)
+        if not updated_instance:
+            raise NotFoundException()
         
-        return None
+        return self.read_schema.model_validate(updated_instance)
 
-    async def delete(self, pk: Any) -> ReadSchemaT | None:
+    async def delete(self, pk: Any) -> ReadSchemaT:
         '''Delete object'''
         
         deleted_instance = await self.repository.delete(pk)
         
-        if deleted_instance:
-            return self.read_schema.model_validate(deleted_instance)
+        if not deleted_instance:
+           raise NotFoundException() 
         
-        return None
+        return self.read_schema.model_validate(deleted_instance)
