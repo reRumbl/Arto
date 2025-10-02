@@ -33,5 +33,15 @@ class TestDatabaseSettings(BaseSettings):
         return f'postgresql+asyncpg://{self.DBTEST_USER}:{self.DBTEST_PASS}@{self.DBTEST_HOST}:{self.DBTEST_PORT}/{self.DBTEST_NAME}'
 
 
+class AuthSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=get_env_file_path(), extra='ignore')
+    
+    JWT_SECRET_KEY: str = ''
+    JWT_ALGHORITM: str= 'HS256'
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = 10080
+
+
 db_settings = DatabaseSettings()
 test_db_settings = TestDatabaseSettings()
+auth_settings = AuthSettings()
