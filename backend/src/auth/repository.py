@@ -1,7 +1,8 @@
+from uuid import UUID
+from typing import Any
 from sqlalchemy import select
 from src.core.repository import BaseRepository
 from src.auth.models import UserModel, BlackListTokenModel
-from src.auth.schemas import BlackListTokenCreate
 
 
 class AuthRepository(BaseRepository[UserModel]):
@@ -18,8 +19,12 @@ class AuthRepository(BaseRepository[UserModel]):
         user_db = result.scalars().first()
         return user_db
 
-    async def create_black_list_token(self, data: BlackListTokenCreate) -> None:
-        black_listed = BlackListTokenModel(**data.model_dump())
+    async def create_black_list_token(self, **kwargs: Any) -> None:
+        black_listed = BlackListTokenModel(**kwargs)
         self.session.add(black_listed)
         await self.session.commit()
+    
+    async def get_black_list_token(self, id: UUID) -> BlackListTokenModel | None:
+        black_listed = await self.session.get(BlackListTokenModel, id)
+        return black_listed
     

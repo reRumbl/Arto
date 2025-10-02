@@ -28,10 +28,6 @@ class TokenRequest(BaseModel):
 class BlackListTokenBase(BaseModel):
     id: UUID
     expire: datetime
-
-
-class BlackListTokenCreate(BlackListTokenBase):
-    pass
     
 
 class BlackListToken(BlackListTokenBase):
@@ -62,6 +58,11 @@ class UserRegister(UserBase):
 
 class UserLogin(UserBase):
     password: SecretStr
+
+
+class UserUpdate(BaseModel):
+    email: str | None = None
+    username: str | None = None
     
 
 class User(UserBase):

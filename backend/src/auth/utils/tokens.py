@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, UTC
 import jwt
 from jwt.exceptions import PyJWTError
 from src.auth.schemas import User, JwtTokenSchema, TokenPair
-from src.core.dependencies import SessionDep
+from src.auth.repository import AuthRepository
 from src.core.exceptions import UnauthorizedException
 from src.auth.models import BlackListTokenModel
 from src.auth.constants import SUB, EXP, IAT, JTI
@@ -47,11 +47,11 @@ def create_token_pair(user: User) -> TokenPair:
     )
 
 
-async def decode_access_token(session: SessionDep, token: str):
+async def decode_access_token(repository: AuthRepository, token: str):
     try:
         payload = jwt.decode(token, auth_settings.JWT_SECRET_KEY, algorithms=[auth_settings.JWT_ALGHORITM])
         
-        black_list_token = await session.get(BlackListTokenModel, payload[JTI])
+        black_list_token = await repository.get_black_list_token(payload[JTI])
         if black_list_token:
             raise PyJWTError('Token is blacklisted')
         
