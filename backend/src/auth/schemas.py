@@ -25,11 +25,18 @@ class TokenRequest(BaseModel):
     token: str
 
 
-class BlackListToken(BaseModel):
-    model_config = ConfigDict(from_attributes=True)  # Same as "orm_mode = True"
-    
+class BlackListTokenBase(BaseModel):
     id: UUID
     expire: datetime
+
+
+class BlackListTokenCreate(BlackListTokenBase):
+    pass
+    
+
+class BlackListToken(BlackListTokenBase):
+    model_config = ConfigDict(from_attributes=True)  # Same as "orm_mode = True"
+    
     created_at: datetime
     updated_at: datetime
 
